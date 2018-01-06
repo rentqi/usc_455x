@@ -1,0 +1,124 @@
+package pa2;
+
+//Name: Tianqi Ren
+//USC NetID: 4080641619
+//CSCI455 PA2
+//Fall 2017
+
+import java.util.Scanner;
+import java.util.ArrayList;
+
+/**
+ * Play BulgarianSolitaire game in user mode or single-step mode.
+ * Play several rounds until the game is done.
+ * 
+*/
+
+public class BulgarianSolitaireSimulator {
+	
+public static void main(String[] args) {
+  
+   boolean singleStep = false;
+   boolean userConfig = false;
+   
+   for (int i = 0; i < args.length; i++) {
+      if (args[i].equals("-u")) {
+         userConfig = true;
+      }
+      else if (args[i].equals("-s")) {
+         singleStep = true;
+      }
+   }
+   
+   SolitaireBoard sBoard;
+   ArrayList<Integer> list =  new ArrayList<>();
+   
+   if(userConfig) {
+	   userInit(list);								//user input
+	   sBoard = new SolitaireBoard(list);			//if the input is valid, create the board
+	   userPlay(sBoard);								//play
+   }
+   
+   if(singleStep) {
+	   sBoard = new SolitaireBoard();
+	   singlePlay(sBoard);							//single-step play
+   }
+}
+
+/**
+ * Returns true iff the board is valid to play
+ * @param list is used to store what the user inputs
+ */
+	private static boolean validBoard(ArrayList<Integer> list) {
+		int sum = 0;
+		for(int i=0;i<list.size();i++) {
+			if(list.get(i) <= 0 || list.get(i) > 45) return false;
+			sum += list.get(i);
+		}
+		if(sum != SolitaireBoard.CARD_TOTAL) return false;
+		return true;
+	}
+
+/**
+ * preparation step before play. 
+ * User keeps inputting piles until the input is valid.
+ * @param list is used to store the piles user input. After this method list stores the valid piles to play.
+ */
+	private static void userInit(ArrayList<Integer> list) {
+		System.out.println("Number of total cards is " + SolitaireBoard.CARD_TOTAL);
+		System.out.println("You will be entering the initial configuration of the cards (i.e., how many in each pile).");
+		System.out.println("Please enter a space-separated list of positive integers followed by newline:");
+		Scanner in = new Scanner(System.in);
+		String line = in.nextLine();
+		Scanner lineScanner = new Scanner(line);
+		while(lineScanner.hasNextInt()) {
+			int temp = lineScanner.nextInt();
+			list.add(temp);
+		}
+		while(!validBoard(list)) {
+			System.out.println("ERROR: Each pile must have at least one card and the total number of cards must be " + SolitaireBoard.CARD_TOTAL);
+			System.out.println("Please enter a space-separated list of positive integers followed by newline:");
+			list.clear();
+			line = in.nextLine();
+			lineScanner = new Scanner(line);
+			while(lineScanner.hasNextInt()) {
+				int temp = lineScanner.nextInt();
+				list.add(temp);
+			}
+		}
+	}
+
+/**
+ * Play the SolitaireBoard game until it is done.
+ * User mode.
+ * 
+ */
+	private static void userPlay(SolitaireBoard sBoard) {
+		System.out.println("Initial configuration: " + sBoard.configString());
+		int count = 1;
+		while(!sBoard.isDone()) {
+			sBoard.playRound();
+			System.out.println("[" + count + "] "+"Current configuration: " + sBoard.configString());	
+			count++;
+		}
+		System.out.println("Done");
+	}
+
+/**
+ * Play the SolitaireBoard game until it is done.
+ * User should type enter after each round to continue.
+ */
+	private static void singlePlay(SolitaireBoard sBoard) {
+		int count = 1;
+		System.out.println("Initial configuration: " + sBoard.configString());
+		Scanner in = new Scanner(System.in);
+		while(!sBoard.isDone()) {
+			sBoard.playRound();
+			System.out.println("[" + count + "] "+"Current configuration: " + sBoard.configString());
+			count++;
+			System.out.print("<Type return to continue>");
+			in.nextLine();
+		}
+		System.out.println("Done");		
+	}
+}
