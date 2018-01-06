@@ -1,0 +1,9 @@
+cd ~/cs455/lab1/
+javac Hello.java
+Picked up _JAVA_OPTIONS: -Xms64m -Xmx256m
+Hello.java:5: error: ';' expected
+	System.out.println("Hello world!")
+	                                  ^
+1 error
+
+Compilation exited abnormally with code 1 at Wed Aug 23 22:57:49
