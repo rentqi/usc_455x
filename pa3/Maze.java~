@@ -1,0 +1,205 @@
+//Name: Tianqi Ren
+//USC loginid: tianqire
+//CS 455 PA3
+//Fall 2017
+
+import java.util.LinkedList;
+
+/**
+ * Maze class
+ * 
+ * Stores information about a maze and can find a path through the maze (if
+ * there is one).
+ * 
+ * Assumptions about structure of the maze, as given in mazeData, startLoc, and
+ * endLoc (parameters to constructor), and the path: -- no outer walls given in
+ * mazeData -- search assumes there is a virtual border around the maze (i.e.,
+ * the maze path can't go outside of the maze boundaries) -- start location for
+ * a path is maze coordinate startLoc -- exit location is maze coordinate
+ * exitLoc -- mazeData input is a 2D array of booleans, where true means there
+ * is a wall at that location, and false means there isn't (see public FREE /
+ * WALL constants below) -- in mazeData the first index indicates the row. e.g.,
+ * mazeData[row][col] -- only travel in 4 compass directions (no diagonal paths)
+ * -- can't travel through walls
+ * 
+ */
+
+public class Maze {
+
+	public static final boolean FREE = false;
+	public static final boolean WALL = true;
+
+	/**
+	 * Constructs a maze.
+	 * 
+	 * @param mazeData
+	 *            the maze to search. See general Maze comments above for what goes
+	 *            in this array.
+	 * @param startLoc
+	 *            the location in maze to start the search (not necessarily on an
+	 *            edge)
+	 * @param exitLoc
+	 *            the "exit" location of the maze (not necessarily on an edge) PRE:
+	 *            0 <= startLoc.getRow() < mazeData.length and 0 <=
+	 *            startLoc.getCol() < mazeData[0].length and 0 <= endLoc.getRow() <
+	 *            mazeData.length and 0 <= endLoc.getCol() < mazeData[0].length
+	 * 
+	 */
+
+	private boolean[][] maze;
+	private MazeCoord startLoc;
+	private MazeCoord exitLoc;
+	private LinkedList<MazeCoord> path;
+	private boolean[][] visited;
+
+	public Maze(boolean[][] mazeData, MazeCoord startLoc, MazeCoord exitLoc) {
+		maze = mazeData;
+		this.startLoc = startLoc;
+		this.exitLoc = exitLoc;
+	}
+
+	/**
+	 * Returns the number of rows in the maze
+	 * 
+	 * @return number of rows
+	 */
+	public int numRows() {
+		return maze.length;
+	}
+
+	/**
+	 * Returns the number of columns in the maze
+	 * 
+	 * @return number of columns
+	 */
+	public int numCols() {
+		return maze[0].length;
+	}
+
+	/**
+	 * Returns true iff there is a wall at this location
+	 * 
+	 * @param loc
+	 *            the location in maze coordinates
+	 * @return whether there is a wall here PRE: 0 <= loc.getRow() < numRows() and 0
+	 *         <= loc.getCol() < numCols()
+	 */
+	public boolean hasWallAt(MazeCoord loc) {
+		int row = loc.getRow();
+		int col = loc.getCol();
+		if (row < 0 || row >= numRows() || col < 0 || col >= numCols()) {
+			return WALL;
+		}
+		return maze[row][col];
+	}
+
+	/**
+	 * Returns the entry location of this maze.
+	 */
+	public MazeCoord getEntryLoc() {
+		return startLoc;
+	}
+
+	/**
+	 * Returns the exit location of this maze.
+	 */
+	public MazeCoord getExitLoc() {
+		return exitLoc;
+	}
+
+	/**
+	 * Returns the path through the maze. First element is start location, and last
+	 * element is exit location. If there was not path, or if this is called before
+	 * a call to search, returns empty list.
+	 * 
+	 * @return the maze path
+	 */
+	public LinkedList<MazeCoord> getPath() {
+		if (path == null || path.isEmpty()) {
+			return new LinkedList<MazeCoord>();
+		}
+		return path;
+
+	}
+
+	/**
+	 * Find a path from start location to the exit location (see Maze constructor
+	 * parameters, startLoc and exitLoc) if there is one. Client can access the path
+	 * found via getPath method.
+	 * 
+	 * @return whether a path was found.
+	 */
+	public boolean search() {
+		// start at startLoc and end at exitLoc
+		path = new LinkedList<MazeCoord>();
+		visited = new boolean[maze.length][maze[0].length];
+		boolean res = helper(startLoc);
+		path.addFirst(startLoc);
+		return res;
+	}
+
+	private boolean helper(MazeCoord startLoc) {
+		// base
+		if (hasWallAt(startLoc)) {
+			return false;
+		}
+		if (visited[startLoc.getRow()][startLoc.getCol()]) {
+			return false;
+		}
+		if (done(startLoc)) {
+			return true;
+		}
+		visited[startLoc.getRow()][startLoc.getCol()] = true;
+		
+		// one level down this location
+		MazeCoord down = new MazeCoord(startLoc.getRow() + 1, startLoc.getCol());
+		if (helper(down)) {
+			path.addFirst(down);
+			return true;
+		}
+		// one level up this location
+		MazeCoord up = new MazeCoord(startLoc.getRow() - 1, startLoc.getCol());
+		if (helper(up)) {
+			path.addFirst(up);
+			return true;
+		}
+		// one column left this location
+		MazeCoord left = new MazeCoord(startLoc.getRow(), startLoc.getCol() - 1);
+		if (helper(left)) {
+			path.addFirst(left);
+			return true;
+		}
+		// one column right this location
+		MazeCoord right = new MazeCoord(startLoc.getRow(), startLoc.getCol() + 1);
+		if (helper(right)) {
+			path.addFirst(right);
+			return true;
+		}
+		// neither situations above
+		return false;
+	}
+
+	private boolean done(MazeCoord loc) {
+		if (loc.equals(exitLoc)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	// for testing and debugging
+	public String toString() {
+		String mazeString = "";
+		for (int i = 0; i < numRows(); i++) {
+			for (int j = 0; j < numCols(); j++) {
+				if (maze[i][j]) {
+					mazeString = mazeString + "1";
+				} else {
+					mazeString = mazeString + "0";
+				}
+			}
+			mazeString = mazeString + "\n";
+		}
+		return mazeString;
+	}
+}
