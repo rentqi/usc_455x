@@ -1,0 +1,64 @@
+Name:Tianqi Ren 
+USC NetId:4080641619
+CSCI 455 PA1
+Fall 2017
+
+----------------------------------------------
+CERTIFY IT'S YOUR WORK
+
+"I certify that the work submitted for this assignment does not
+violate USC's student conduct code.  In particular, the work is my
+own, not a collaboration, and does not involve code created by other
+people, except for the the resources explicitly mentioned in the CS 455
+Course Syllabus.  And I did not share my solution or parts of it with
+other students in the course."
+
+Initial below to "sign" the above statement:
+
+Tianqi Ren
+----------------------------------------------
+ACKNOWLEDGE ANY OUTSIDE SOURCES
+
+List here any code you submitted for this assignment that was written
+with significant help of a course staff member, or code used from the
+textbook.  Be specific about what methods or algorithms are involved,
+and what sections of the textbook are involved (if applicable): [you do
+not need to list any of the code that we wrote for the assignment,
+i.e., the contents of the starter files for the assignment]
+
+
+References: car.java, carComponent.java and carViewer.java in textbook
+----------------------------------------------
+KNOWN BUGS or LIMITATIONS:
+
+
+overlapping of labels when resizing the window to a small size
+----------------------------------------------
+ANY OTHER NOTES FOR THE GRADER:
+
+
+
+----------------------------------------------
+ANSWERS TO ASSIGNMENT README QUESTIONS (if applicable):
+
+1. two heads: 25%
+   two tails: 25%
+   a head and a tail: 50%
+   Suppose we have two trials. First one we get a head and second one we get a tail. This should be counted into a head and a tail. First one we get a tail and second one we get a head. This should also be counted into a head and a tail. So the probability of this result should be twice times as other two results.
+
+2. Trials	results
+   5000		24%	50%	26%
+   6000		25%	51%	24%
+   7000		25%	51%	24%
+   8000		25%	50%	25%
+   9000		25%	50%	25%
+   10000	25%	51%	25%
+
+   I omit the trials less than 5000.
+   I found that from 7000, we get results within 1% of these probabilities.
+   So the answer is about 7,000.
+
+3. The largest value that can work well is 214783647, and 214783648 would make it crash. The largest vale of integer in java is 2^31-1. Specifically, the range of integer in java is -2^31 to 2^31-1.
+
+
+
